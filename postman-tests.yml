@@ -1,1 +1,39 @@
 
+name: Postman Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  postman-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Postman Collection
+        run: |
+          newman run Basic_API_Collection.json \
+          --environment Local_Environment.json \
+          --reporters junit \
+          --reporter-junit-export results/report.xml
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: postman-test-results
+          path: results/report.xml
