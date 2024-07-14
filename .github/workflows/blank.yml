@@ -40,7 +40,11 @@ jobs:
       - name: Run Postman Collection
         run: newman run Postman/1.postman_collection.json -e Postman/Testing.postman_environment.json -r junit,cli --reporter-junit-export results/report.xml
 
-      - name: Upload Test Results
+      - name: Create Results Directory
+         run: mkdir -p results
+        # Use 'mkdir -p' to ensure the directory is created if it doesn't exist
+
+       - name: Upload Test Results
         uses: actions/upload-artifact@v2
         with:
           name: postman-test-results
